@@ -1,53 +1,51 @@
 import firebase from '@/plugins/firebase'
-// import firebase from 'firebase'
-// import firebase from '~/plugins/firebase'
 
 export const state = () => ({
- todos: [],
+  todos: [],
 })
 
 export const getters = {
- todos: state => {
-   return state.todos
- },
+  todos: state => {
+    return state.todos
+  },
 }
 
 export const actions = {
-   getTodos({ commit }) {
-   firebase.firestore().collection('todos').orderBy("todo").get()
-     .then((res) => {
-       const todos = []
-       res.forEach(x => {
-         console.log(x.data())
-         todos.push(x.data())
-       })
-       commit('getTodos', todos)
-     })
- },
- submitTodo({ dispatch }, todo) {
-   firebase.firestore().collection('todos').add({})
-     .then((res) => {
-       firebase.firestore().collection('todos').doc(res.id)
-         .set({
-           todo: todo,
-           id: res.id,
-         }).then(() => {
-           dispatch('getTodos')
-           console.log(todo, res.id)
-         })
-     })
- },
+  getTodos({ commit }) {
+    firebase.firestore().collection('todos').orderBy("todo").get()
+      .then((res) => {
+        const todos = []
+        res.forEach(x => {
+          console.log(x.data())
+          todos.push(x.data())
+        })
+        commit('getTodos', todos)
+      })
+  },
+  submitTodo({ dispatch }, todo) {
+    firebase.firestore().collection('todos').add({})
+      .then((res) => {
+        firebase.firestore().collection('todos').doc(res.id)
+          .set({
+            todo: todo,
+            id: res.id,
+          }).then(() => {
+            dispatch('getTodos')
+            console.log(todo, res.id)
+          })
+      })
+  },
   deleteTodo({ commit, dispatch }, id) {
-   firebase.firestore().collection('todos').doc(id).delete()
-   dispatch('getTodos')
- },
+    firebase.firestore().collection('todos').doc(id).delete()
+    dispatch('getTodos')
+  },
 }
 
 export const mutations = {
- getTodos (state, todos) {
-  state.todos = todos
- },
- deleteTodo (state, index) {
-   state.todos.splice(index, 1)
- },
+  getTodos (state, todos) {
+    state.todos = todos
+  },
+  deleteTodo (state, index) {
+    state.todos.splice(index, 1)
+  },
 }
